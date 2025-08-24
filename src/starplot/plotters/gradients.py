@@ -76,8 +76,9 @@ class GradientBackgroundMixin:
     ) -> LinearSegmentedColormap:
         """Creates a matplotlib colormap from a gradient preset."""
         positions, colors = zip(*gradient_preset)
+        hex_colors = [c.as_hex() if hasattr(c, "as_hex") else str(c) for c in colors]
         cmap = LinearSegmentedColormap.from_list(
-            "custom_gradient", list(zip(positions, colors)), N=750
+            "custom_gradient", list(zip(positions, hex_colors)), N=750
         )
         return cmap.reversed() if reverse else cmap
 

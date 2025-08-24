@@ -92,7 +92,6 @@ class HorizonPlot(
         scale: float = 1.0,
         autoscale: bool = False,
         suppress_warnings: bool = True,
-        gradient_preset: list[tuple[float, str]] = None,
         *args,
         **kwargs,
     ) -> "HorizonPlot":
@@ -126,7 +125,6 @@ class HorizonPlot(
         self.center_az = sum(azimuth) / 2
         self.lat = lat
         self.lon = lon
-        self.gradient_preset = gradient_preset
 
         self._geodetic = ccrs.Geodetic()
         self._plate_carree = ccrs.PlateCarree()
@@ -441,7 +439,7 @@ class HorizonPlot(
             (0, 0),
             width=1,
             height=1,
-            facecolor=self.style.background_color.as_hex(),
+            facecolor=self.style.background.color.as_hex(),
             linewidth=0,
             fill=True,
             zorder=-3_000,
@@ -479,7 +477,8 @@ class HorizonPlot(
 
         self._fit_to_ax()
 
-        if self.gradient_preset:
-            self.apply_gradient_background(self.gradient_preset)
+        if self.style.background.is_gradient():
+            self.apply_gradient_background(self.style.background.color)
+            self.style.background.color = "#ffffff00"
 
         self._plot_background_clip_path()

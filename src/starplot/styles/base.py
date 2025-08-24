@@ -2,7 +2,7 @@ import json
 
 from enum import Enum
 from pathlib import Path
-from typing import Optional, Union, List
+from typing import Optional, Union, List, Tuple
 
 import yaml
 
@@ -173,6 +173,11 @@ class MarkerSymbolEnum(str, Enum):
             MarkerSymbolEnum.STAR_8: "$\u2734$",
             MarkerSymbolEnum.ELLIPSE: ellipse(),
         }[self.value]
+
+
+class BackgroundStyleEnum(str, Enum):
+    SOLID = "solid"
+    GRADIENT = "gradient"
 
 
 class LineStyleEnum(str, Enum):
@@ -348,6 +353,22 @@ class MarkerStyle(BaseStyle):
             zorder=self.zorder,
             line_style=self.line_style,
         )
+
+
+class BackgroundStyle(BaseStyle):
+    """Styling for the background."""
+
+    style: BackgroundStyleEnum = BackgroundStyleEnum.SOLID
+    """Whether the background is solid or a gradient"""
+
+    color: Union[ColorStr, List[Tuple[float, ColorStr]]] = ColorStr("#fff")
+    """Color of the background. Can be a color or a gradient list"""
+
+    alpha: float = 1.0
+    """Alpha value (controls transparency)"""
+
+    def is_gradient(self) -> bool:
+        return isinstance(self.color, list)
 
 
 class LineStyle(BaseStyle):
@@ -661,7 +682,8 @@ class PlotStyle(BaseStyle):
     Defines the styling for a plot
     """
 
-    background_color: ColorStr = ColorStr("#fff")
+    # background_color: ColorStr = ColorStr("#fff")
+    background: BackgroundStyle = BackgroundStyle()
     """Background color of the map region"""
 
     figure_background_color: ColorStr = ColorStr("#fff")
