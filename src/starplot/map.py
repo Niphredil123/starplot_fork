@@ -550,15 +550,16 @@ class MapPlot(
         else:
             self.ax.set_extent(bounds, crs=self._plate_carree)
 
-        self.ax.set_facecolor(self.style.background_color.as_hex())
+        # self.ax.set_facecolor(self.style.background.color.as_hex())
         self._adjust_radec_minmax()
 
         self.logger.debug(f"Projection = {self.projection.value.upper()}")
 
         self._fit_to_ax()
 
-        if self.gradient_preset:
-            self.apply_gradient_background(self.gradient_preset)
+        if self.style.background.is_gradient():
+            self.apply_gradient_background(self.style.background.color)
+            self.style.background.color = "#ffffff00"
 
         self._plot_background_clip_path()
 
@@ -606,7 +607,7 @@ class MapPlot(
             points = list(zip(*self.clip_path.exterior.coords.xy))
             self._background_clip_path = patches.Polygon(
                 to_axes(points),
-                facecolor=self.style.background_color.as_hex(),
+                facecolor=self.style.background.color.as_hex(),
                 fill=True,
                 zorder=-2_000,
                 transform=self.ax.transAxes,
@@ -616,7 +617,7 @@ class MapPlot(
                 (0.50, 0.50),
                 radius=0.45,
                 fill=True,
-                facecolor=self.style.background_color.as_hex(),
+                facecolor=self.style.background.color.as_hex(),
                 # edgecolor=self.style.border_line_color.as_hex(),
                 linewidth=0,
                 zorder=-2_000,
@@ -629,7 +630,7 @@ class MapPlot(
                 (0, 0),
                 width=1,
                 height=1,
-                facecolor=self.style.background_color.as_hex(),
+                facecolor=self.style.background.color.as_hex(),
                 linewidth=0,
                 fill=True,
                 zorder=-2_000,

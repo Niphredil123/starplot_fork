@@ -80,7 +80,6 @@ class OpticPlot(
         scale: float = 1.0,
         autoscale: bool = False,
         suppress_warnings: bool = True,
-        gradient_preset: list[tuple[float, str]] = None,
         *args,
         **kwargs,
     ) -> "OpticPlot":
@@ -101,7 +100,6 @@ class OpticPlot(
         self.dec = dec
         self.lat = lat
         self.lon = lon
-        self.gradient_preset = gradient_preset
         self.raise_on_below_horizon = raise_on_below_horizon
 
         self.optic = optic
@@ -361,7 +359,7 @@ class OpticPlot(
         self._background_clip_path = self.optic.patch(
             x,
             y,
-            facecolor=self.style.background_color.as_hex(),
+            facecolor=self.style.background.color.as_hex(),
             linewidth=0,
             fill=True,
             zorder=ZOrderEnum.LAYER_1,
@@ -420,7 +418,9 @@ class OpticPlot(
         self.ax.set_xlim(-1.06 * self.optic.xlim, 1.06 * self.optic.xlim)
         self.ax.set_ylim(-1.06 * self.optic.ylim, 1.06 * self.optic.ylim)
         self.optic.transform(self.ax)
-        self._plot_border()
 
-        if self.gradient_preset:
-            self.apply_gradient_background(self.gradient_preset)
+        if self.style.background.is_gradient():
+            self.apply_gradient_background(self.style.background.color)
+            self.style.background.color = "#ffffff00"
+
+        self._plot_border()
